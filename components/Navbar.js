@@ -15,7 +15,7 @@ const Navbar = () => {
   //   )
   // }
   return (
-    <nav className="bg-gray-900 text-white flex justify-between items-center px-4 h-12">
+    <nav className="bg-gray-900 text-white flex justify-between items-center px-4 h-14">
       <Link href={"/"} className="logo font-bold text-lg">GetMeAChai</Link>
       {/* <ul className='flex justify-between gap-4'>
             <li>Hime</li>
@@ -37,7 +37,7 @@ const Navbar = () => {
                 setshowdropdown(false)
               }, 100)}}
             >
-              Welcome {session.user.email}
+              Welcome {session.user.name}
               <svg
                 className="w-2.5 h-2.5 ms-3"
                 aria-hidden="true"
@@ -64,7 +64,7 @@ const Navbar = () => {
               >
                 <li>
                   <Link
-                    href={"/dashboard"}
+                    href="/dashboard"
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     Dashboard
@@ -72,18 +72,10 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href={`/u/${session.user.name}`}
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
-                    Settings
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Earnings
+                    Your Page
                   </Link>
                 </li>
                 <li>
@@ -91,7 +83,7 @@ const Navbar = () => {
                     href="#"
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     onClick={()=>{signOut()}}
-                  >
+                    >
                     Sign out
                   </Link>
                 </li>
@@ -109,7 +101,7 @@ const Navbar = () => {
             </button>
           </Link>
         )} */}
-        {/* {session && (
+        {session && (
           <button
             type="button"
             className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
@@ -119,7 +111,7 @@ const Navbar = () => {
           >
             LogOut
           </button>
-        )} */}
+        )}
         {!session && (
           <Link href={"/login"}>
             <button

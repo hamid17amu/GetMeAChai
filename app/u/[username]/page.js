@@ -1,8 +1,9 @@
+import PaymentPage from '@/components/PaymentPage'
 import React from 'react'
 
 const Username = ({params}) => {
   return (
-    <div>{params.username}</div>
+    <PaymentPage username={params.username}/>
   )
 }
 
