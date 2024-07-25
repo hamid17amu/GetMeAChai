@@ -29,3 +29,29 @@ export const initiate= async(amount, to_username, paymentform) =>{
     return x
 }
  
+export const fetchuser = async(username)=>{
+    await connectDB()
+    let u=await User.findOne({username: username})
+    let user= u.toObject({flattenObjectIds: true})
+    return user
+}
+
+export const fetchPayment= async(username)=>{
+    await connectDB()
+    let p=await Payment.find({to_user: username, done:true}).sort({amount:-1}).lean()
+    return p
+}
+
+export const updateProfile = async (data, oldusername)=>{
+    await connectDB()
+    let ndata=Object.fromEntries(data)
+    if(oldusername!=ndata.username){
+        let nu= await User.findOne({username: ndata.username})
+        if(nu){
+            return {success: false, message:"Username already exists!"}
+        }
+    }
+
+    await User.updateOne({email: ndata.email}, ndata)
+    return {success: true, message: "Profile updated successfully!"}
+}

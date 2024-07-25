@@ -1,11 +1,13 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Script from "next/script";
-import { initiate } from "@/actions/useractions";
+import { initiate, fetchuser, fetchPayment } from "@/actions/useractions";
 
 const PaymentPage = ({username}) => {
     const [paymentform, setPaymentform] = useState({})
-    
+    const [currentUser, setCurrentUser] = useState({})
+    const [Payments, setPayments] = useState([])
+
     const handleChange = (e) =>{
         setPaymentform({...paymentform, [e.target.name]: e.target.value})
     }
@@ -22,7 +24,7 @@ const PaymentPage = ({username}) => {
             "description": "Test Transaction",
             "image": "https://example.com/your_logo",
             "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            "callback_url": "localhost:3000/api/razorpay",
+            "callback_url": "http://localhost:3000/api/razorpay",
             "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
                 "name": "Gaurav Kumar", //your customer's name
                 "email": "gaurav.kumar@example.com",
@@ -38,6 +40,20 @@ const PaymentPage = ({username}) => {
         var rzp1= new Razorpay(options);       
         rzp1.open()
     } 
+
+    const getData = async()=>{
+      let u=await fetchuser(username)
+      setCurrentUser(u)
+      // console.log(u)
+      let dbPayments= await fetchPayment(username)
+      setPayments(dbPayments)
+      console.log(u,dbPayments)
+    }
+
+    useEffect(() => {
+      getData()
+    }, [])
+    
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
@@ -66,9 +82,10 @@ const PaymentPage = ({username}) => {
           {/* Leaderboard */}
           <h2 className='text-2xl font-bold my-5'>Supporters</h2>
           <ul className='mx-5 lext-lg'>
-            <li className='my-2'>___ donated <span className='font-bold'>$__</span> with a message "__"</li>
-            <li className='my-2'>___ donated <span className='font-bold'>$__</span> with a message "__"</li>
-            <li className='my-2'>___ donated <span className='font-bold'>$__</span> with a message "__"</li>
+            {Payments.length==0 && <li>No payments yet</li>}
+            {Payments?.map((p,i)=>{
+              return <li key={i} className='my-2'>{p.name} donated <span className='font-bold'>₹{p.amount/100}</span> with a message "{p.message}"</li>
+            })}
           </ul>
         </div>
         <div className="makepayment bg-slate-900 w-1/2 rounded-lg p-5">
@@ -76,8 +93,8 @@ const PaymentPage = ({username}) => {
         <div className="flex gap-2 flex-col">
           <input onChange={handleChange} name="message" value={paymentform.message} type="text" className='p-3 rounded-lg bg-slate-800' placeholder='Enter Message'/>
           <input onChange={handleChange} name="name" value={paymentform.name} type="text" className='p-3 rounded-lg bg-slate-800' placeholder='Enter Name'/>
-          <input onChange={handleChange} name="amount" value={paymentform.amount} type="text" className='p-3 rounded-lg bg-slate-800' placeholder='Enter Amount'/>
-          <button type="button" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2">Pay</button>
+          <input onChange={handleChange} name="amount" value={paymentform.amount} type="number" className='p-3 rounded-lg bg-slate-800' placeholder='Enter Amount'/>
+          <button onClick={()=>{pay(paymentform.amount * 100)}} type="button" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2">Pay</button>
         </div>
         {/* or choose Amount */}
         <div className="flex gap-2 mt-5">

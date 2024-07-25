@@ -2,25 +2,35 @@
 import React, {useState, useEffect} from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { fetchuser, updateProfile } from "@/actions/useractions";
 
 
 const Dashboard = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter()
   const [form, setform] = useState({})
 
   useEffect(() => {
     if (!session) {
-        router.push("/login");
-      }
+      router.push("/login");
+    }
+    else getData()
+    
   }, [router, session])
+
+  const getData=async()=>{
+    let u=await fetchuser(session.user.name)
+    setform(u)
+  }
   
   const handleChange=(e)=>{
     setform({...form,[e.target.name]: e.target.value})
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    update()
+    let a= await updateProfile(e,session.user.name)
+    alert(a.message)
   };
   return (
     <div className="container mx-auto py-5">
@@ -83,39 +93,35 @@ const Dashboard = () => {
         {/* profile pic */}
         <div className="my-2">
           <label
-            htmlFor="Profile"
+            htmlFor="profilepic"
             className="block mb-2 text-sm font-medium text-white"
           >
             Profile Picture
           </label>
           <input
-            value={form.profile?form.pofile:""}
+            value={form.profilepic?form.profilepic:""}
             onChange={handleChange}
-            name="profile"
+            name="profilepic"
             type="text"
-            id="profile"
+            id="profilepic"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            
-            required
           />
         </div>
         {/* coverPic */}
         <div className="my-2">
           <label
-            htmlFor="cover"
+            htmlFor="coverpic"
             className="block mb-2 text-sm font-medium text-white"
           >
             Conver Picture
           </label>
           <input
-            value={form.cover?form.cover:""}
+            value={form.coverpic?form.coverpic:""}
             onChange={handleChange}
-            name="cover"
+            name="coverpic"
             type="text"
-            id="cover"
+            id="coverpic"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            
-            required
           />
         </div>
 
@@ -134,8 +140,6 @@ const Dashboard = () => {
             type="text"
             id="razorpayid"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            
-            required
           />
         </div>
 
@@ -154,8 +158,6 @@ const Dashboard = () => {
             type="text"
             id="razorpaysecret"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            
-            required
           />
         </div>
         

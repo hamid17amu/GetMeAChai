@@ -39,7 +39,7 @@ export const authOptions= NextAuth({
         if(account.provider=='github'){
           await connectDB()
 
-          const currentUser= await User.findOne({email: email})
+          const currentUser= await User.findOne({email: user.email})
           if(!currentUser){
             const newUser= await User.create({
               email:user.email,
