@@ -6,9 +6,10 @@ import User from "@/models/User"
 
 export const initiate= async(amount, to_username, paymentform) =>{
     await connectDB()
+    let u=await User.findOne({username:to_username})
     var instance = new Razorpay({
-      key_id: process.env.KEY_ID,
-      key_secret: process.env.KEY_SECRET,
+      key_id: u.razorpayid,
+      key_secret: u.razorpaysecret,
     })
 
     let options={
@@ -20,7 +21,7 @@ export const initiate= async(amount, to_username, paymentform) =>{
 
     await Payment.create({
         oid:x.id,
-        amount:amount,
+        amount:amount/100,
         to_user:to_username,
         name: paymentform.name,
         message: paymentform.message
@@ -32,6 +33,9 @@ export const initiate= async(amount, to_username, paymentform) =>{
 export const fetchuser = async(username)=>{
     await connectDB()
     let u=await User.findOne({username: username})
+    if(!u){
+        return {}
+    }
     let user= u.toObject({flattenObjectIds: true})
     return user
 }
