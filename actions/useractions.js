@@ -33,9 +33,6 @@ export const initiate= async(amount, to_username, paymentform) =>{
 export const fetchuser = async(username)=>{
     await connectDB()
     let u=await User.findOne({username: username})
-    if(!u){
-        return {}
-    }
     let user= u.toObject({flattenObjectIds: true})
     return user
 }
@@ -54,6 +51,8 @@ export const updateProfile = async (data, oldusername)=>{
         if(nu){
             return {success: false, message:"Username already exists!"}
         }
+        
+        await Payment.updateMany({to_user:oldusername}, {to_user:ndata.username})
     }
 
     await User.updateOne({email: ndata.email}, ndata)
