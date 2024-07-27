@@ -31,7 +31,7 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     update()
     let a= await updateProfile(e,session.user.name)
-    toast(a.message, {
+    if(a.success) toast.success(a.message, {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -42,6 +42,17 @@ const Dashboard = () => {
       theme: "light",
       transition: Bounce,
       });
+      else toast.error(a.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
   };
   return (
     <>

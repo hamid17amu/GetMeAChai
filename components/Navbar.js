@@ -15,7 +15,7 @@ const Navbar = () => {
   //   )
   // }
   return (
-    <nav className="bg-gray-900 text-white flex justify-between items-center px-4 h-14">
+    <nav className="bg-gray-900 text-white flex justify-between items-center px-4 md:h-14 flex-col md:flex-row">
       <Link href={"/"} className="logo font-bold text-lg">GetMeAChai</Link>
       {/* <ul className='flex justify-between gap-4'>
             <li>Hime</li>

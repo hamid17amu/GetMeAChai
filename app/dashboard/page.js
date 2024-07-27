@@ -9,3 +9,7 @@ const dashboard = () => {
 };
 
 export default dashboard;
+
+export const metadata = {
+  title: 'Dashboard | GetMeAChai',
+}

@@ -49,10 +49,8 @@ const PaymentPage = ({ username }) => {
   const getData = async () => {
     let u = await fetchuser(username);
     setCurrentUser(u);
-    console.log(u);
     let dbPayments = await fetchPayment(username);
     setPayments(dbPayments);
-    // console.log(u,dbPayments)
   };
 
   useEffect(() => {
@@ -61,7 +59,8 @@ const PaymentPage = ({ username }) => {
 
   useEffect(() => {
     if(searchParams.get("paymentdone") =="true"){
-      toast('Payment Successful!\nThanks for your donation.', {
+      router.push(`/u/${username}`);
+      toast.success('Payment Successful!\nThanks for your donation.', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -72,14 +71,26 @@ const PaymentPage = ({ username }) => {
         theme: "light",
         transition: Bounce,
         });
-      router.push(`/u/${username}`)
     }
-    
+    else if(searchParams.get("paymentdone") =="false"){
+      router.push(`/u/${username}`);
+      toast.error('Payment failed!\nPlease try again.', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+    }
   }, [])
 
   return (
     <>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -90,9 +101,9 @@ const PaymentPage = ({ username }) => {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
       {/* Same as */}
-      {/* <ToastContainer /> */}
+      <ToastContainer />
       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
 
       <div className="cover w-full bg-red-50 relative">
@@ -121,7 +132,7 @@ const PaymentPage = ({ username }) => {
         <div className="paymen flex gap-3 w-[80%] mt-11">
           <div className="supporters bg-slate-900 w-1/2 rounded-lg p-10">
             {/* Leaderboard */}
-            <h2 className="text-2xl font-bold my-5">Supporters</h2>
+            <h2 className="text-2xl font-bold my-5">Top 10 supporters</h2>
             <ul className="mx-5 lext-lg">
               {Payments.length == 0 && <li>No payments yet</li>}
               {Payments?.map((p, i) => {
@@ -136,7 +147,7 @@ const PaymentPage = ({ username }) => {
             </ul>
           </div>
           <div className="makepayment bg-slate-900 w-1/2 rounded-lg p-5">
-            <h2 className="text-2xl font-bold my-5">Make a Paymenr</h2>
+            <h2 className="text-2xl font-bold my-5">Make a Payment</h2>
             <div className="flex gap-2 flex-col">
               <input
                 onChange={handleChange}
